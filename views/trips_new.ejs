@@ -1,0 +1,37 @@
+<%- include('partials/layout', { body: `
+  <section class="page-header">
+    <h1>Create a new trip</h1>
+    <p>Give your trip a name, dates, and where you went.</p>
+  </section>
+
+  <form class="form" action="/trips" method="post">
+    <label>
+      <span>Title</span>
+      <input type="text" name="title" required placeholder="Japan 2024" />
+    </label>
+
+    <label>
+      <span>Location</span>
+      <input type="text" name="location" placeholder="Tokyo, Japan" />
+    </label>
+
+    <div class="form-row">
+      <label>
+        <span>Start date</span>
+        <input type="date" name="startDate" />
+      </label>
+      <label>
+        <span>End date</span>
+        <input type="date" name="endDate" />
+      </label>
+    </div>
+
+    <label>
+      <span>Description</span>
+      <textarea name="description" rows="3" placeholder="Cherry blossoms, sushi, and city lights."></textarea>
+    </label>
+
+    <button type="submit" class="btn-primary">Create trip</button>
+  </form>
+` }) %>
+

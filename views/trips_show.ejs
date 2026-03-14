@@ -1,0 +1,59 @@
+<%- include('partials/layout', { body: `
+  <section class="page-header">
+    <h1><%= trip.title %></h1>
+    <% if (trip.location) { %>
+      <p class="trip-location"><%= trip.location %></p>
+    <% } %>
+    <% if (trip.startDate || trip.endDate) { %>
+      <p class="trip-dates">
+        <%= trip.startDate || '?' %> – <%= trip.endDate || '?' %>
+      </p>
+    <% } %>
+    <% if (trip.description) { %>
+      <p class="trip-description"><%= trip.description %></p>
+    <% } %>
+  </section>
+
+  <section class="upload-panel">
+    <h2>Add photos to this trip</h2>
+    <form class="form" action="/trips/<%= trip.id %>/photos" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="tripId" value="<%= trip.id %>" />
+      <label>
+        <span>Photos</span>
+        <input type="file" name="photos" accept="image/*" multiple required />
+      </label>
+      <label>
+        <span>Tags (comma separated)</span>
+        <input type="text" name="tags" placeholder="beach, sunset, family" />
+      </label>
+      <button type="submit" class="btn-primary">Upload</button>
+    </form>
+  </section>
+
+  <section class="photos-grid">
+    <% if (!photos.length) { %>
+      <p class="empty-state">No photos in this trip yet. Upload some above.</p>
+    <% } else { %>
+      <% photos.forEach(photo => { %>
+        <article class="photo-card">
+          <a href="/uploads/<%= photo.relativePath %>" target="_blank">
+            <img src="/uploads/<%= photo.relativePath %>" alt="<%= photo.originalName %>" />
+          </a>
+          <div class="photo-meta">
+            <% if (photo.tags && photo.tags.length) { %>
+              <p class="photo-tags">
+                <% photo.tags.forEach(tag => { %>
+                  <span class="tag"><%= tag %></span>
+                <% }); %>
+              </p>
+            <% } %>
+            <form action="/photos/<%= photo.id %>?_method=DELETE" method="post">
+              <button type="submit" class="btn-danger">Delete</button>
+            </form>
+          </div>
+        </article>
+      <% }); %>
+    <% } %>
+  </section>
+` }) %>
+

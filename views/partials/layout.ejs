@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Travel Photos</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">
+        <span class="logo-mark">✈</span>
+        <span class="logo-text">My Travel Photos</span>
+      </div>
+      <nav class="nav">
+        <a href="/">Trips</a>
+        <a href="/trips/new">New trip</a>
+      </nav>
+      <form class="search-form" action="/search" method="get">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search by place or tag..."
+          value="<%= typeof query !== 'undefined' ? query : '' %>"
+        />
+      </form>
+    </header>
+
+    <main class="page-content">
+      <%- body %>
+    </main>
+
+    <footer class="site-footer">
+      <p>Travel memories, under your control.</p>
+    </footer>
+  </body>
+  </html>
+

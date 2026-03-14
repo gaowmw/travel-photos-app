@@ -1,0 +1,54 @@
+<%- include('partials/layout', { body: `
+  <section class="page-header">
+    <h1>Search results for "<%= query %>"</h1>
+  </section>
+
+  <section class="search-section">
+    <h2>Trips</h2>
+    <div class="trips-grid">
+      <% if (!trips.length) { %>
+        <p class="empty-state">No trips match this search.</p>
+      <% } else { %>
+        <% trips.forEach(trip => { %>
+          <article class="trip-card">
+            <a href="/trips/<%= trip.id %>">
+              <div class="trip-card-body">
+                <h3><%= trip.title %></h3>
+                <% if (trip.location) { %>
+                  <p class="trip-location"><%= trip.location %></p>
+                <% } %>
+              </div>
+            </a>
+          </article>
+        <% }); %>
+      <% } %>
+    </div>
+  </section>
+
+  <section class="search-section">
+    <h2>Photos</h2>
+    <div class="photos-grid">
+      <% if (!photos.length) { %>
+        <p class="empty-state">No photos match this search.</p>
+      <% } else { %>
+        <% photos.forEach(photo => { %>
+          <article class="photo-card">
+            <a href="/uploads/<%= photo.relativePath %>" target="_blank">
+              <img src="/uploads/<%= photo.relativePath %>" alt="<%= photo.originalName %>" />
+            </a>
+            <div class="photo-meta">
+              <% if (photo.tags && photo.tags.length) { %>
+                <p class="photo-tags">
+                  <% photo.tags.forEach(tag => { %>
+                    <span class="tag"><%= tag %></span>
+                  <% }); %>
+                </p>
+              <% } %>
+            </div>
+          </article>
+        <% }); %>
+      <% } %>
+    </div>
+  </section>
+` }) %>
+

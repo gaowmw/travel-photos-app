@@ -1,0 +1,37 @@
+<%- include('partials/layout', { body: `
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Your travel story in trips</h1>
+      <p>Group your photos by trip, tag them, and keep everything private unless you choose to share.</p>
+      <a href="/trips/new" class="btn-primary">Create a new trip</a>
+    </div>
+  </section>
+
+  <section class="trips-grid">
+    <% if (!trips.length) { %>
+      <p class="empty-state">No trips yet. Start by creating your first trip.</p>
+    <% } else { %>
+      <% trips.forEach(trip => { %>
+        <article class="trip-card">
+          <a href="/trips/<%= trip.id %>">
+            <div class="trip-card-body">
+              <h2><%= trip.title %></h2>
+              <% if (trip.location) { %>
+                <p class="trip-location"><%= trip.location %></p>
+              <% } %>
+              <% if (trip.startDate || trip.endDate) { %>
+                <p class="trip-dates">
+                  <%= trip.startDate || '?' %> – <%= trip.endDate || '?' %>
+                </p>
+              <% } %>
+              <% if (trip.description) { %>
+                <p class="trip-description"><%= trip.description %></p>
+              <% } %>
+            </div>
+          </a>
+        </article>
+      <% }); %>
+    <% } %>
+  </section>
+` }) %>
+
