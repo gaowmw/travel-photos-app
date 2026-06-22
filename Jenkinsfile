@@ -173,6 +173,52 @@ pipeline {
             run("docker tag ${env.BUILT_IMAGE} ${fullTag}")
             run("docker push ${fullTag}")
           }
+
+          // Expose the fully-qualified image tag for later deploy stages.
+          env.DEPLOY_IMAGE = fullTag
+        }
+      }
+    }
+
+    stage('Deploy to Kubernetes (optional)') {
+      when {
+        allOf {
+          expression { return env.DEPLOY_TO_K8S == 'true' }
+          expression { return env.DEPLOY_IMAGE?.trim() }
+        }
+      }
+      steps {
+        script {
+          // Requirements on the Jenkins agent:
+          // - kubectl installed and on PATH
+          // - KUBECONFIG environment variable points at a valid kubeconfig
+          // Recommended additional env vars in the job:
+          // - K8S_NAMESPACE (e.g. "default")
+          // - K8S_DEPLOYMENT (e.g. "travel-photos-app")
+
+          def run = { String cmd -> if (isUnix()) { sh cmd } else { bat cmd } }
+
+          // Basic safety checks.
+          try {
+            run('kubectl version --client')
+          } catch (ignored) {
+            echo 'kubectl not available on this agent; skipping Kubernetes deploy.'
+            return
+          }
+
+          def ns = env.K8S_NAMESPACE ?: 'default'
+          def deployment = env.K8S_DEPLOYMENT ?: env.APP_NAME
+
+          echo "Deploying image ${env.DEPLOY_IMAGE} to Kubernetes deployment ${deployment} in namespace ${ns}"
+
+          // Apply manifests (expects k8s/deployment.yaml and k8s/service.yaml in repo).
+          if (fileExists('k8s')) {
+            run("kubectl apply -n ${ns} -f k8s")
+          }
+
+          // Ensure the deployment uses the freshly built image.
+          run("kubectl set image deployment/${deployment} ${env.APP_NAME}=${env.DEPLOY_IMAGE} -n ${ns}")
+          run("kubectl rollout status deployment/${deployment} -n ${ns}")
         }
       }
     }

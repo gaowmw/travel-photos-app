@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travel-photos-app
+  labels:
+    app: travel-photos-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: travel-photos-app
+  template:
+    metadata:
+      labels:
+        app: travel-photos-app
+    spec:
+      containers:
+        - name: travel-photos-app
+          # This image will typically be overridden by Jenkins via kubectl set image.
+          image: your-registry.example.com/your-namespace/travel-photos-app:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+      volumes:
+        - name: uploads
+          emptyDir: {}
+
